@@ -6,7 +6,9 @@ import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
 import static net.serenitybdd.screenplay.GivenWhenThen.then;
 import static net.serenitybdd.screenplay.GivenWhenThen.when;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.fail;
 
+import net.thucydides.core.annotations.Pending;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +26,7 @@ import net.thucydides.core.annotations.Managed;
 import net.thucydides.core.annotations.Steps;
 
 @RunWith(SerenityRunner.class)
-public class MovieSearchOnWikipedia {
+public class MovieSearchOnWikipediaTest {
 
 	 Actor anna = Actor.named("Anna"); 
 	 
@@ -36,7 +38,8 @@ public class MovieSearchOnWikipedia {
 	 
 	 @Before
 	 public void annaCanBrowseTheWeb() {
-	     anna.can(BrowseTheWeb.with(herBrowser));                                        
+	 	herBrowser.manage().window().maximize();
+	 	anna.can(BrowseTheWeb.with(herBrowser));
 	 }   
 	 
 	 @Test
@@ -56,4 +59,23 @@ public class MovieSearchOnWikipedia {
 	 	then(anna).should(eventually(seeThat(TheWebPage.title(),
 	    containsString("Batman: The Dark Knight Returns (film) - Wikipedia"))));
 	 }
+
+	@Test
+	public void search_for_movie_batman_begins_on_wikipedia() {
+		givenThat(anna).wasAbleTo(openTheApplication);
+		when(anna).attemptsTo(Search.forTheTerm("Batman begins"));
+		when(anna).attemptsTo(OpenSearchResult.forTheFirstPage("Batman Begins - Wikipedia"));
+		then(anna).should(eventually(seeThat(TheWebPage.title(),
+				containsString("Batman Begins - Wikipedia"))));
+	}
+
+	@Test
+	public void this_test_should_fail() {
+		fail();
+	}
+
+	@Pending
+	@Test
+	public void pending_test() {
+	}
 }
